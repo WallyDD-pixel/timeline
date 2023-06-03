@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Timeline</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+  <style>
+    /* Styles pour la timeline */
+    body {
+      background-color: #f8f9fa;
+      font-family: Arial, sans-serif;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .timeline-container {
+      max-width: 800px;
+      grid-column: 1; /* Ajout de la propriété grid-column pour placer le conteneur de la timeline à gauche */
+    }
+
+    .form-container {
+      grid-column: 2; /* Ajout de la propriété grid-column pour placer le conteneur du formulaire à droite */
+    }
+
+    .timeline-container {
+      max-width: 800px;
+    }
+
+    .timeline {
+      position: relative;
+      margin: 40px auto;
+      padding: 0;
+      list-style: none;
+    }
+    .timeline:before {
+      content: '';
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 2px;
+      background: #d3d3d3;
+    }
+    .timeline-panel {
+      position: relative;
+      margin-left: 70px;
+      padding: 20px;
+      border: 1px solid #d3d3d3;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+    .timeline-date {
+      font-size: 14px;
+      font-weight: bold;
+      margin-bottom: 10px;
+      color: #555;
+    }
+    .timeline-title {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+    .timeline-description {
+      font-size: 14px;
+      line-height: 1.5;
+      color: #777;
+    }
+
+    .form-container {
+      margin-top: 20px;
+    }
+    .form-container h3 {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+    .form-container input,
+    .form-container textarea {
+      margin-bottom: 10px;
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #d3d3d3;
+      border-radius: 4px;
+      background-color: #fff;
+    }
+    .form-container button {
+      padding: 8px 16px;
+      font-size: 14px;
+      font-weight: bold;
+      color: #fff;
+      background-color: #007bff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .form-container button:hover {
+      background-color: #0056b3;
+    }
+
+    .pdf-button {
+      margin-top: 20px;
+    }
+    .pdf-button {
+      padding: 8px 16px;
+      font-size: 14px;
+      font-weight: bold;
+      color: #fff;
+      background-color: #28a745;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .pdf-button:hover {
+      background-color: #1a682c;
+    }
+
+    /* Nouveaux styles pour les panels */
+    .timeline-panel-white {
+      background-color: #fff;
+      color: #000;
+    }
+
+    .timeline-panel-black {
+      background-color: #262626;
+      color: #fff;
+    }
+
+    /* Styles pour les boutons d'actions */
+    .actions-container {
+      margin-top: 10px;
+    }
+    .actions-container button {
+      padding: 4px 8px;
+      font-size: 12px;
+      font-weight: bold;
+      color: #fff;
+      background-color: #007bff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-right: 5px;
+    }
+    .actions-container button:hover {
+      background-color: #0056b3;
+    }
+
+    /* Styles pour le formulaire d'édition */
+    .edit-form-container {
+      display: none;
+      margin-top: 20px;
+    }
+    .edit-form-container.show {
+      display: block;
+    }
+
+    /* Styles personnalisés pour la timeline */
+    .timeline-panel[data-id="1"] {
+      background-color: #ffeeba;
+    }
+
+    .timeline-panel[data-id="2"] {
+      background-color: #d4edda;
+    }
+
+    /* Styles dynamiques pour les panels */
+    .timeline-panel-white {
+      background-color: #fff;
+      color: #000;
+    }
+
+    .timeline-panel-black {
+      background-color: #262626;
+      color: #fff;
+    }
+
+    /* Styles pour le formulaire d'édition */
+    .edit-form-container {
+      display: none;
+      margin-top: 20px;
+    }
+    .edit-form-container.show {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="timeline-container">
+    <h1>Timeline</h1>
+    <ul class="timeline">
+      <li>
+        <div class="timeline-panel timeline-panel-white" data-id="1">
+          <div class="timeline-date">2023-05-30</div>
+          <div class="timeline-title">Événement 1</div>
+          <div class="timeline-description">Description de l'événement 1</div>
+          <div class="actions-container">
+            <button onclick="showEditForm(this)">Modifier</button>
+            <button onclick="deleteEvent(this)">Supprimer</button>
+          </div>
+        </div>
+      </li>
+      <li>
+        <div class="timeline-panel timeline-panel-black" data-id="2">
+          <div class="timeline-date">2023-05-31</div>
+          <div class="timeline-title">Événement 2</div>
+          <div class="timeline-description">Description de l'événement 2</div>
+          <div class="actions-container">
+            <button onclick="showEditForm(this)">Modifier</button>
+            <button onclick="deleteEvent(this)">Supprimer</button>
+          </div>
+        </div>
+      </li>
+    </ul>
+    <div class="form-container">
+      <h3>Ajouter un nouvel événement</h3>
+      <form id="addForm">
+        <input type="date" id="eventDate" required>
+        <input type="text" id="eventType" placeholder="Type d'événement" required>
+        <textarea id="eventDescription" placeholder="Description de l'événement" required></textarea>
+        <button type="submit">Ajouter</button>
+      </form>
+    </div>
+    <div class="edit-form-container" id="editFormContainer">
+      <h3>Modifier l'événement</h3>
+      <form id="editForm">
+        <input type="date" id="editEventDate" required>
+        <input type="text" id="editEventType" placeholder="Type d'événement" required>
+        <textarea id="editEventDescription" placeholder="Description de l'événement" required></textarea>
+        <button type="submit">Enregistrer</button>
+        <button onclick="cancelEdit()">Annuler</button>
+      </form>
+    </div>
+    <button class="pdf-button" onclick="generatePDF()">Générer PDF</button>
+
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.68/pdfmake.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.68/vfs_fonts.js"></script>
+
+
+
+
+
+  <script>
+    
+    // Déclarez une variable globale pour stocker l'ID de l'événement en cours de modification
+    var currentEventId;
+
+    // Fonction pour afficher le formulaire d'édition
+    function showEditForm(button) {
+      var panel = button.parentNode.parentNode;
+      var eventId = panel.dataset.id;
+      var date = panel.querySelector('.timeline-date').textContent;
+      var eventType = panel.querySelector('.timeline-title').textContent;
+      var eventDescription = panel.querySelector('.timeline-description').textContent;
+
+      // Mettez à jour les valeurs du formulaire d'édition
+      document.getElementById('editEventDate').value = date;
+      document.getElementById('editEventType').value = eventType;
+      document.getElementById('editEventDescription').value = eventDescription;
+
+      // Stockez l'ID de l'événement en cours de modification
+      currentEventId = eventId;
+
+      // Affichez le formulaire d'édition
+      document.getElementById('editFormContainer').classList.add('show');
+    }
+
+    // Fonction pour annuler la modification de l'événement
+    function cancelEdit() {
+      // Réinitialisez le formulaire d'édition
+      document.getElementById('editForm').reset();
+
+      // Masquez le formulaire d'édition
+      document.getElementById('editFormContainer').classList.remove('show');
+
+      // Réinitialisez la variable de l'ID de l'événement en cours de modification
+      currentEventId = null;
+    }
+
+    // Fonction pour modifier l'événement
+    function editEvent(event) {
+      event.preventDefault();
+
+      // Récupérez les valeurs du formulaire d'édition
+      var date = document.getElementById('editEventDate').value;
+      var type = document.getElementById('editEventType').value;
+      var description = document.getElementById('editEventDescription').value;
+
+      // Recherchez le panneau de l'événement en cours de modification
+      var panel = document.querySelector(`.timeline-panel[data-id="${currentEventId}"]`);
+
+      // Mettez à jour les informations de l'événement dans le panneau
+      panel.querySelector('.timeline-date').textContent = date;
+      panel.querySelector('.timeline-title').textContent = type;
+      panel.querySelector('.timeline-description').textContent = description;
+
+      // Masquez le formulaire d'édition
+      document.getElementById('editFormContainer').classList.remove('show');
+
+      // Réinitialisez le formulaire d'édition
+      document.getElementById('editForm').reset();
+
+      // Réinitialisez la variable de l'ID de l'événement en cours de modification
+      currentEventId = null;
+    }
+
+    // Fonction pour supprimer l'événement
+    function deleteEvent(button) {
+      var panel = button.parentNode.parentNode;
+      panel.parentNode.removeChild(panel);
+    }
+
+    // Génération du PDF
+// Génération du PDF
+// Génération du PDF
+function generatePDF() {
+  const panels = document.querySelectorAll('.timeline-panel');
+  const colors = ['#f2f2f2', '#e6e6e6', '#cccccc', '#b3b3b3', '#999999']; // Liste de couleurs prédéfinies pour les panneaux
+
+  const content = Array.from(panels).map((panel, index) => {
+    const date = panel.querySelector('.timeline-date').textContent;
+    const type = panel.querySelector('.timeline-title').textContent;
+    const description = panel.querySelector('.timeline-description').textContent;
+
+    const panelContent = [
+      { text: date, bold: true, fontSize: 14, margin: [0, 5, 0, 0], color: '#007bff' },
+      { text: type, bold: true, fontSize: 16, margin: [0, 2, 0, 0], color: '#555555' },
+      { text: description, fontSize: 12, margin: [0, 10, 0, 0], color: '#888888' },
+    ];
+
+    return {
+      table: {
+        widths: ['*'],
+        body: [[{ stack: panelContent, margin: [0, 10], padding: [10, 10, 10, 0] }]],
+      },
+      layout: {
+        hLineColor: '#dddddd',
+        vLineWidth: () => 0,
+      },
+      fillColor: colors[index % colors.length],
+      margin: [0, 0, 0, 10],
+      border: [1, 1, 1, 0],
+      borderRadius: [100, 100, 100, 100], // Ajout des bordures arrondies
+      borderColor: '#dddddd',
+      shadow: { color: '#aaaaaa', opacity: 1, blur: 8, offsetX: 2, offsetY: 2 },
+    };
+  });
+
+  const documentDefinition = {
+    content: [
+      { text: 'Timeline', style: 'header', alignment: 'center', fontSize: 36, margin: [0, 0, 0, 20] },
+      { columns: [{ width: '*', text: 'Timeline', style: 'subheader', fontSize: 18, margin: [40, 0, 0, 10] }] },
+      ...content,
+    ],
+    pageSize: 'A4',
+    pageMargins: [40, 60, 40, 60],
+    styles: {
+      header: { fillColor: '#007bff', color: '#ffffff', bold: true, margin: [0, 0, 0, 10] },
+      subheader: { bold: true, fontSize: 24, margin: [0, 0, 0, 10] },
+    },
+  };
+
+  pdfMake.createPdf(documentDefinition).download('timeline.pdf');
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // Ajout d'un événement
+    document.getElementById('addForm').addEventListener('submit', function(event) {
+      event.preventDefault();
+
+      // Récupérez les valeurs du formulaire d'ajout
+      var date = document.getElementById('eventDate').value;
+      var type = document.getElementById('eventType').value;
+      var description = document.getElementById('eventDescription').value;
+
+      // Créez un nouvel élément de panel pour l'événement
+      var newPanel = document.createElement('div');
+      newPanel.classList.add('timeline-panel', 'timeline-panel-white');
+      newPanel.setAttribute('data-id', Date.now()); // Utilisez un timestamp comme ID unique
+      newPanel.innerHTML = `
+        <div class="timeline-date">${date}</div>
+        <div class="timeline-title">${type}</div>
+        <div class="timeline-description">${description}</div>
+        <div class="actions-container">
+          <button onclick="showEditForm(this)">Modifier</button>
+          <button onclick="deleteEvent(this)">Supprimer</button>
+        </div>
+      `;
+
+      // Ajoutez le nouvel élément de panel à la timeline
+      document.querySelector('.timeline').appendChild(newPanel);
+
+      // Réinitialisez le formulaire d'ajout
+      document.getElementById('addForm').reset();
+    });
+
+    // Écouteur d'événement pour la soumission du formulaire de modification
+    document.getElementById('editForm').addEventListener('submit', editEvent);
+  </script>
+</body>
+</html>
